@@ -1,0 +1,144 @@
+###############################################
+# KUBERNETES / KUBECTL
+###############################################
+
+# local kubeconfigs (NEVER commit these)
+kubeconfig
+kubeconfig.yaml
+kubeconfig.yml
+*.kubeconfig
+*.kubeconfig.yaml
+*.kubeconfig.yml
+
+# kubectl cache
+.kube/cache/
+.kube/http-cache/
+.kube/config.d/*
+
+# kubectl cluster-info dump
+cluster-info/
+cluster-info.dump
+
+###############################################
+# KUSTOMIZE
+###############################################
+
+# build output
+kustomize-build/
+*.kustomize.yaml
+*.kustomization.tmp
+*.kustomization.backup
+
+# rendered manifests
+rendered/
+manifests-build/
+*.rendered.yaml
+*.patched.yaml
+
+###############################################
+# HELM
+###############################################
+
+# local Helm chart builds
+charts/*/charts/
+charts/*/tmpcharts/
+tmpcharts/
+charts/*/Chart.lock
+Chart.lock
+
+# provenance files
+*.tgz
+*.prov
+
+# Helm test output
+helm-test-results/
+
+###############################################
+# CERTIFICATES / SECRETS
+###############################################
+
+*.crt
+*.key
+*.pem
+*.csr
+*.gpg
+*.p12
+*.jks
+*.sops.yaml
+*.sops.yml
+*.sealed-secret.yaml
+*.sealed-secret.yml
+
+# Local dev-only secret files
+secrets/
+*.secret.yaml
+*.secret.yml
+
+###############################################
+# TERRAFORM (If you're provisioning K8s infra)
+###############################################
+
+.terraform/
+.terraform.lock.hcl
+*.terraformrc
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+crash.log
+
+###############################################
+# CONTAINERS / DOCKER
+###############################################
+
+# Build artifacts
+*.dockerfile.tmp
+docker-build/
+docker-cache/
+*.tar
+
+###############################################
+# OS + EDITOR JUNK
+###############################################
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux temp files
+*~
+*.swp
+*.swo
+
+###############################################
+# IDEs
+###############################################
+
+# VS Code
+.vscode/
+.history/
+
+# JetBrains / IntelliJ / PyCharm / GoLand
+.idea/
+*.iml
+
+# Sublime
+*.sublime-project
+*.sublime-workspace
+
+###############################################
+# LOGS & TEMP FILES
+###############################################
+
+*.log
+logs/
+tmp/
+*.tmp
+*.bak
+*.out
+*.pid

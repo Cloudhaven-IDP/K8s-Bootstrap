@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: nginx-ingress
+
+resources:
+  # Common NGINX
+  - ../../../charts/nginx-kubernetes-ingress/deployments/common/ns-and-sa.yaml
+  - ../../../charts/nginx-kubernetes-ingress/deployments/common/nginx-config.yaml
+  - ../../../charts/nginx-kubernetes-ingress/deployments/common/plus-mgmt-configmap.yaml
+  - ../../../charts/nginx-kubernetes-ingress/deployments/common/ingress-class.yaml
+
+  # RBAC
+  - ../../../charts/nginx-kubernetes-ingress/deployments/rbac/ap-rbac.yaml
+  - ../../../charts/nginx-kubernetes-ingress/deployments/rbac/apdos-rbac.yaml
+  - ../../../charts/nginx-kubernetes-ingress/deployments/rbac/rbac.yaml
+
+  # Controller Deployment
+  - ../../../charts/nginx-kubernetes-ingress/deployments/deployment/nginx-ingress.yaml
+
+  # Service of type LoadBalancer
+  - ../../../charts/nginx-kubernetes-ingress/deployments/service/loadbalancer.yaml
