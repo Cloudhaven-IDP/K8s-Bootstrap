@@ -4,7 +4,7 @@ metadata:
   name: longhorn
   namespace: argocd
 spec:
-  project: pi-cluster-system-apps
+  project: pi-cluster-system-apps-root
   source:
     repoURL: https://charts.longhorn.io
     chart: longhorn
@@ -16,9 +16,9 @@ spec:
           defaultDataPath: /var/lib/longhorn
   destination:
     server: https://kubernetes.default.svc
-    namespace: longhorn-system
+    namespace: longhorn
   syncPolicy:
-    automated:
+    automated
       prune: true
       selfHeal: true
     syncOptions:
