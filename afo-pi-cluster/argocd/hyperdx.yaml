@@ -11,7 +11,7 @@ spec:
     path: afo-pi-cluster/kustomize/system-apps/clickstack
   destination:
     server: https://kubernetes.default.svc
-    namespace: clickstack
+    namespace: observability
   syncPolicy:
     automated:
       prune: true

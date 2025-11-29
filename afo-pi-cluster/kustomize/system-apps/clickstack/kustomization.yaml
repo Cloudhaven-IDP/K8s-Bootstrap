@@ -1,15 +1,15 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: clickstack
+namespace: observability
 
 resources:
-  - namespace.yaml
-  - ingress.yaml
+  - resources/namespace.yaml
+  - resources/ingress.yaml
 
 helmCharts:
   - name: clickstack
     repo: https://hyperdxio.github.io/helm-charts
     releaseName: clickstack
-    namespace: clickstack
-    valuesFile: values.yaml
+    namespace: observability
+    valuesFile: resources/values.yaml
