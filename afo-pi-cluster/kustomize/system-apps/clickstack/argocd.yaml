@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: clickstack
+  namespace: argocd
+spec:
+  project: pi-cluster-system-apps
+  source:
+    repoURL: https://github.com/Cloudhaven-IDP/K8s-Bootstrap.git
+    targetRevision: main
+    path: afo-pi-cluster/kustomize/system-apps/clickstack
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: clickstack
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
