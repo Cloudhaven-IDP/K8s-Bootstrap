@@ -26,7 +26,7 @@ spec:
   source:
     repoURL: 'https://github.com/Cloudhaven-IDP/K8s-Bootstrap.git'
     targetRevision: main
-    path: afo-pi-cluster/kustomize/system-apps/
+    path: afo-pi-cluster/argocd/
     directory:
       recurse: true
   destination:
