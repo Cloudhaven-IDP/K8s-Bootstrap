@@ -19,11 +19,13 @@ mongodb:
     enabled: true
     dataSize: 20Gi
 
-hyperdx:
-  useExistingConfigSecret: true
-  existingConfigSecret: "hyperdx-secret"
-  existingConfigConnectionsKey: "connections.json"
-  existingConfigSourcesKey: "sources.json"
+apikey: "85e3592f-912e-483c-ad2d-53ba8f5279f4"
+
+# hyperdx:
+#   useExistingConfigSecret: true
+#   existingConfigSecret: "hyperdx-secret"
+#   existingConfigConnectionsKey: "connections.json"
+#   existingConfigSourcesKey: "sources.json"
 #   frontendUrl: "https://hyperdx.cloudhaven.work"
 #   ingress:
 #     enabled: false
