@@ -20,7 +20,7 @@ mongodb:
     enabled: true
     dataSize: 20Gi
 
-hyperdx:
-  frontendUrl: "https://hyperdx.cloudhaven.work"
-  ingress:
-    enabled: false
+# hyperdx:
+#   frontendUrl: "https://hyperdx.cloudhaven.work"
+#   ingress:
+#     enabled: false
