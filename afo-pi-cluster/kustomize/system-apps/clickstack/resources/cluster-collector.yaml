@@ -48,6 +48,13 @@ spec:
           - type: container
             id: container-parser
 
+      kubeletstats:
+        collection_interval: 20s
+        auth_type: serviceAccount
+        endpoint: "https://${env:K8S_NODE_NAME}:10250"
+        insecure_skip_verify: true
+        metric_groups: [node, pod, container]
+
       hostmetrics:
         collection_interval: 20s
         scrapers:
@@ -76,6 +83,9 @@ spec:
           authorization: "${env:HYPERDX_API_KEY}"
 
     service:
+      telemetry:
+        logs:
+          level: "debug"
       pipelines:
         logs:
           receivers: [filelog]
