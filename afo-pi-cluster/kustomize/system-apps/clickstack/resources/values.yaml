@@ -1,5 +1,5 @@
-global:
-  storageClassName: longhorn
+# global:
+#   storageClassName: longhorn
 
 clickhouse:
   replicaCount: 2
