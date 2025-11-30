@@ -1,10 +1,28 @@
-replicaCount: 2
-resources:
-  limits:
-    cpu: 500m
-    memory: 512Mi
-  requests:
-    cpu: 250m
-    memory: 256Mi
-ingress:
-  enabled: false
+
+clickhouse:
+  replicaCount: 2
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  persistence:
+    enabled: true
+    size: 50Gi
+    storageClass: longhorn
+
+mongodb:
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  persistence:
+    enabled: true
+    dataSize: 20Gi
+    storageClass: longhorn
+
+hyperdx:
+  frontendUrl: "https://hyperdx.cloudhaven.work"
+  ingress:
+    enabled: true
+    host: "hyperdx.cloudhaven.work"
+    ingressClassName: nginx
