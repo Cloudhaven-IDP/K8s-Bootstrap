@@ -1,3 +1,5 @@
+global:
+  storageClassName: longhorn
 
 clickhouse:
   replicaCount: 2
@@ -8,7 +10,6 @@ clickhouse:
   persistence:
     enabled: true
     size: 50Gi
-    storageClass: longhorn
 
 mongodb:
   resources:
@@ -18,7 +19,6 @@ mongodb:
   persistence:
     enabled: true
     dataSize: 20Gi
-    storageClass: longhorn
 
 hyperdx:
   frontendUrl: "https://hyperdx.cloudhaven.work"
@@ -26,3 +26,5 @@ hyperdx:
     enabled: true
     host: "hyperdx.cloudhaven.work"
     ingressClassName: nginx
+    annotations:
+      kubernetes.io/ingress.class: nginx
