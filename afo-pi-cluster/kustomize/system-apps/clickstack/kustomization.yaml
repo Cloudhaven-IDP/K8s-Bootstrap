@@ -6,6 +6,7 @@ namespace: observability
 resources:
   - resources/namespace.yaml
   - resources/ingress.yaml
+  - resources/configmap.yaml
 
 helmCharts:
   - name: clickstack
