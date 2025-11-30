@@ -5,6 +5,8 @@ metadata:
   namespace: observability
 spec:
   mode: daemonset
+  args:
+    - "--log-level=debug"
 
   image: otel/opentelemetry-collector-contrib:0.123.0
 
@@ -47,13 +49,6 @@ spec:
         operators:
           - type: container
             id: container-parser
-
-      kubeletstats:
-        collection_interval: 20s
-        auth_type: serviceAccount
-        endpoint: "https://${env:K8S_NODE_NAME}:10250"
-        insecure_skip_verify: true
-        metric_groups: [node, pod, container]
 
       hostmetrics:
         collection_interval: 20s
