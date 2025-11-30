@@ -19,7 +19,7 @@ mongodb:
     enabled: true
     dataSize: 20Gi
 
-apikey: "85e3592f-912e-483c-ad2d-53ba8f5279f4"
+apikey: "ODVlMzU5MmYtOTEyZS00ODNjLWFkMmQtNTNiYThmNTI3OWY0"
 
 # hyperdx:
 #   useExistingConfigSecret: true
