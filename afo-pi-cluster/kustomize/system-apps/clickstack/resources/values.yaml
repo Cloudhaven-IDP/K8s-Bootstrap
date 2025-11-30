@@ -19,7 +19,9 @@ mongodb:
     enabled: true
     dataSize: 20Gi
 
-# hyperdx:
+hyperdx:
+  useExistingConfigSecret: true
+  existingConfigSecret: "hyperdx-secret"
 #   frontendUrl: "https://hyperdx.cloudhaven.work"
 #   ingress:
 #     enabled: false
