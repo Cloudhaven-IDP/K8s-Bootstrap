@@ -9,8 +9,6 @@ spec:
     repoURL: https://github.com/Cloudhaven-IDP/K8s-Bootstrap.git
     targetRevision: main
     path: afo-pi-cluster/kustomize/system-apps/clickstack
-    kustomize:
-      enableHelm: true
   destination:
     server: https://kubernetes.default.svc
     namespace: observability
