@@ -77,7 +77,7 @@ spec:
 
     exporters:
       otlphttp:
-        endpoint: "https://in-otel.hyperdx.io"
+        endpoint: "http://clickstack-otel-collector.observability.svc.cluster.local:4318"
         compression: gzip
         headers:
           authorization: "${env:HYPERDX_API_KEY}"
