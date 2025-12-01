@@ -85,7 +85,7 @@ spec:
     service:
       telemetry:
         logs:
-          level: "info"
+          level: "debug"
       pipelines:
         logs:
           receivers: [filelog]
