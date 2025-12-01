@@ -94,4 +94,4 @@ spec:
         metrics:
           receivers: [hostmetrics, kubeletstats]
           processors: [k8sattributes, batch]
-          exporters: [otlphttp]
+          exporters: [otlphttp, logging]
