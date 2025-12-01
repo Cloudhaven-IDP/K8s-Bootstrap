@@ -4,7 +4,7 @@ metadata:
   name: cluster-otel-collector
 rules:
   - apiGroups: [""]
-    resources: ["nodes/stats", "nodes/proxy", "node/stats", "node/metrics", pods]
+    resources: ["nodes/stats", "nodes/proxy", "node/stats", "node/metrics"]
     verbs: ["get", "list", "watch"]
 
   - apiGroups: [""]
