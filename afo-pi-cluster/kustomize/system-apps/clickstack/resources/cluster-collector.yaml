@@ -172,8 +172,8 @@ spec:
         logs:
           receivers: [filelog]
           processors: [k8sattributes, batch]
-          exporters: [otlphttp]
+          exporters: [debug, otlphttp]
         metrics:
           receivers: [hostmetrics, kubeletstats]
           processors: [k8sattributes, batch]
-          exporters: [logging, otlphttp]
+          exporters: [debug, otlphttp]
