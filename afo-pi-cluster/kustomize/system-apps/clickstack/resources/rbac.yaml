@@ -1,25 +1,25 @@
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: cluster-otel-collector
-rules:
-  - apiGroups: [""]
-    resources: ["nodes/stats", "nodes/proxy", "node/stats", "node/metrics"]
-    verbs: ["get", "list", "watch"]
+# apiVersion: rbac.authorization.k8s.io/v1
+# kind: ClusterRole
+# metadata:
+#   name: cluster-otel-collector
+# rules:
+#   - apiGroups: [""]
+#     resources: ["nodes/stats", "nodes/proxy", "node/stats", "node/metrics"]
+#     verbs: ["get", "list", "watch"]
 
-  - apiGroups: [""]
-    resources: ["pods", "namespaces", "nodes"]
-    verbs: ["get", "list", "watch"]
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: cluster-otel-collector
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: cluster-otel-collector
-subjects:
-  - kind: ServiceAccount
-    name: cluster-otel-collector
-    namespace: observability
+#   - apiGroups: [""]
+#     resources: ["pods", "namespaces", "nodes"]
+#     verbs: ["get", "list", "watch"]
+# ---
+# apiVersion: rbac.authorization.k8s.io/v1
+# kind: ClusterRoleBinding
+# metadata:
+#   name: cluster-otel-collector
+# roleRef:
+#   apiGroup: rbac.authorization.k8s.io
+#   kind: ClusterRole
+#   name: cluster-otel-collector
+# subjects:
+#   - kind: ServiceAccount
+#     name: cluster-otel-collector
+#     namespace: observability
