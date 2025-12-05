@@ -1,27 +1,27 @@
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: clickstack
-  namespace: argocd
-spec:
-  project: pi-cluster-system-apps
-  ignoreDifferences:
-    - group: ""
-      kind: Secret
-      name: clickstack-app-secrets
-      namespace: observability
-      jsonPointers:
-        - /data
-  source:
-    repoURL: https://github.com/Cloudhaven-IDP/K8s-Bootstrap.git
-    targetRevision: main
-    path: afo-pi-cluster/kustomize/system-apps/clickstack
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: observability
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
+# apiVersion: argoproj.io/v1alpha1
+# kind: Application
+# metadata:
+#   name: clickstack
+#   namespace: argocd
+# spec:
+#   project: pi-cluster-system-apps
+#   ignoreDifferences:
+#     - group: ""
+#       kind: Secret
+#       name: clickstack-app-secrets
+#       namespace: observability
+#       jsonPointers:
+#         - /data
+#   source:
+#     repoURL: https://github.com/Cloudhaven-IDP/K8s-Bootstrap.git
+#     targetRevision: main
+#     path: afo-pi-cluster/kustomize/system-apps/clickstack
+#   destination:
+#     server: https://kubernetes.default.svc
+#     namespace: observability
+#   syncPolicy:
+#     automated:
+#       prune: true
+#       selfHeal: true
+#     syncOptions:
+#       - CreateNamespace=true
