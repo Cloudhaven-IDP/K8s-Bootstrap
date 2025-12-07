@@ -36,26 +36,18 @@ otel:
       memory: 512Mi
 
 hyperdx:
-  # waitForMongodb:
-  #   resources:
-  #     requests:
-  #       cpu: 50m
-  #       memory: 64Mi
-  #     limits:
-  #       cpu: 100m
-  #       memory: 128Mi
   #useExistingConfigSecret: true
   #existingConfigSecret: "hyperdx-secret"
   # existingConfigConnectionsKey: "connections.json"
   # existingConfigSourcesKey: "sources.json"
   #frontendUrl: "https://hyperdx.cloudhaven.work"
-  # ingress:
-  #   enabled: false
-  # resources:
-  #   requests:
-  #     cpu: 100m
-  #     memory: 256Mi
-  #   limits:
-  #     cpu: 500m
-  #     memory: 512Mi
+  ingress:
+    enabled: false
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
 
