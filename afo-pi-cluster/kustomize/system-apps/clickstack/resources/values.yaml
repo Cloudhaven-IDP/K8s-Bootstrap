@@ -25,11 +25,27 @@ mongodb:
   persistence:
     enabled: true
     dataSize: 20Gi
-# hyperdx:
-#   useExistingConfigSecret: true
-#   existingConfigSecret: "hyperdx-secret"
-#   existingConfigConnectionsKey: "connections.json"
-#   existingConfigSourcesKey: "sources.json"
-#   frontendUrl: "https://hyperdx.cloudhaven.work"
-#   ingress:
-#     enabled: false
+hyperdx:
+  useExistingConfigSecret: true
+  existingConfigSecret: "hyperdx-secret"
+  existingConfigConnectionsKey: "connections.json"
+  existingConfigSourcesKey: "sources.json"
+  frontendUrl: "https://hyperdx.cloudhaven.work"
+  ingress:
+    enabled: false
+  app:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+  waitForMongodb:
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: 100m
+        memory: 128Mi
