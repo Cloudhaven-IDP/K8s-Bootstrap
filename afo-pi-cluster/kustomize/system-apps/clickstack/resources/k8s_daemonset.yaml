@@ -13,8 +13,18 @@ clusterRole:
         - ""
       resources:
         - nodes/proxy
+        - nodes/stats
       verbs:
         - get
+    - apiGroups:
+        - ""
+      resources:
+        - pods
+        - nodes
+      verbs:
+        - get
+        - list
+        - watch
 
 # Presets disabled - configuring manually to avoid invalid 'otel_annotations' key
 # presets:
