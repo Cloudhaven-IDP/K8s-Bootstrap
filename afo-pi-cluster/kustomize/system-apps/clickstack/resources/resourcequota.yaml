@@ -3,9 +3,9 @@ kind: ResourceQuota
 metadata:
   name: clickstack-resource-quota
   namespace: observability
-spec:
-  hard:
-    requests.cpu: "2"
-    requests.memory: 3Gi
-    limits.cpu: "2"
-    limits.memory: 3Gi
+# spec:
+#   hard:
+#     requests.cpu: "2"
+#     requests.memory: 3Gi
+#     limits.cpu: "2"
+#     limits.memory: 3Gi
