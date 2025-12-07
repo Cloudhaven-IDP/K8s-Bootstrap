@@ -7,14 +7,6 @@ spec:
   mode: daemonset
   image: otel/opentelemetry-collector-contrib:0.123.0
 
-  resources:
-    requests:
-      cpu: 100m
-      memory: 256Mi
-    limits:
-      cpu: 500m
-      memory: 512Mi
-
   env:
     - name: K8S_NODE_NAME
       valueFrom:
