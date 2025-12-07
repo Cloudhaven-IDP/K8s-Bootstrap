@@ -160,7 +160,8 @@ spec:
     - name: dockercontainers
       mountPath: /var/lib/docker/containers
       readOnly: true
-      
+    
+
   presets:
     logsCollection:
       enabled: true
@@ -281,7 +282,7 @@ spec:
 
         metrics:
           receivers:
-            - hostmetrics
+            #- hostmetrics
             - kubeletstats
           processors:
             - memory_limiter
