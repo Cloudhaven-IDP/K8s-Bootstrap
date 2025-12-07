@@ -160,6 +160,17 @@ spec:
     - name: dockercontainers
       mountPath: /var/lib/docker/containers
       readOnly: true
+      
+  presets:
+    logsCollection:
+      enabled: true
+    hostMetrics:
+      enabled: true
+    kubernetesAttributes:
+      enabled: true
+      extractAllPodLabels: true
+      extractAllPodAnnotations: true
+
 
   config:
     receivers:
@@ -172,14 +183,14 @@ spec:
           - id: container-parser
             type: container
 
-      hostmetrics:
-        collection_interval: 30s
-        scrapers:
-          cpu: {}
-          memory: {}
-          disk: {}
-          filesystem: {}
-          network: {}
+      # hostmetrics:
+      #   collection_interval: 30s
+      #   scrapers:
+      #     cpu: {}
+      #     memory: {}
+      #     disk: {}
+      #     filesystem: {}
+      #     network: {}
 
       kubeletstats:
         auth_type: "serviceAccount"
