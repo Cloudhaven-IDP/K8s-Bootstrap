@@ -25,6 +25,16 @@ mongodb:
   persistence:
     enabled: true
     dataSize: 20Gi
+
+otel:
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
 hyperdx:
   useExistingConfigSecret: true
   existingConfigSecret: "hyperdx-secret"
@@ -33,14 +43,13 @@ hyperdx:
   frontendUrl: "https://hyperdx.cloudhaven.work"
   ingress:
     enabled: false
-  app:
-    resources:
-      requests:
-        cpu: 100m
-        memory: 256Mi
-      limits:
-        cpu: 500m
-        memory: 512Mi
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
   waitForMongodb:
     resources:
       requests:
