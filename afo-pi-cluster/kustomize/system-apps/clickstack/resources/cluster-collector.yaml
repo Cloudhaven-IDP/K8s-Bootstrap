@@ -183,26 +183,45 @@ spec:
           network: {}
       
       kubeletstats:
-        auth_type: serviceAccount
+        auth_type: 'serviceAccount'
         collection_interval: 30s
         endpoint: https://${env:K8S_NODE_NAME}:10250
         insecure_skip_verify: true
-        metric_groups:
-          - pod
-          - node
-          - container
+        metrics:
+        k8s.pod.cpu_limit_utilization:
+          enabled: true
+        k8s.pod.cpu_request_utilization:
+          enabled: true
+        k8s.pod.memory_limit_utilization:
+          enabled: true
+        k8s.pod.memory_request_utilization:
+          enabled: true
+        k8s.pod.uptime:
+          enabled: true
+        k8s.node.uptime:
+          enabled: true
+        k8s.container.cpu_limit_utilization:
+          enabled: true
+        k8s.container.cpu_request_utilization:
+          enabled: true
+        k8s.container.memory_limit_utilization:
+          enabled: true
+        k8s.container.memory_request_utilization:
+          enabled: true
+        container.uptime:
+          enabled: true
     
     processors:
       memory_limiter:
         check_interval: 1s
         limit_mib: 200
         spike_limit_mib: 40
-      
+
       batch:
         send_batch_size: 512
         send_batch_max_size: 1024
         timeout: 10s
-      
+
       k8sattributes:
         auth_type: serviceAccount
         passthrough: false
@@ -249,8 +268,7 @@ spec:
             - batch
           exporters:
             - otlphttp
-            - debug
-        
+
         metrics:
           receivers:
             - hostmetrics
@@ -261,4 +279,3 @@ spec:
             - batch
           exporters:
             - otlphttp
-            - debug
