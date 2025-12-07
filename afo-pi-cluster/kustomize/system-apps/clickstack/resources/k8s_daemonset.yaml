@@ -4,39 +4,26 @@ mode: daemonset
 image:
   repository: otel/opentelemetry-collector-contrib
   tag: 0.123.0
-   
+
 # Required to use the kubeletstats cpu/memory utilization metrics
 clusterRole:
   create: true
   rules:
     - apiGroups:
-        - ''
+        - ""
       resources:
         - nodes/proxy
       verbs:
         - get
- 
-presets:
-  logsCollection:
-    enabled: true
-  hostMetrics:
-    enabled: true
-  # Configures the Kubernetes Processor to add Kubernetes metadata.
-  # Adds the k8sattributes processor to all the pipelines and adds the necessary rules to ClusterRole.
-  # More Info: https://opentelemetry.io/docs/kubernetes/collector/components/#kubernetes-attributes-processor
-  kubernetesAttributes:
-    enabled: true
-    # When enabled the processor will extra all labels for an associated pod and add them as resource attributes.
-    # The label's exact name will be the key.
-    extractAllPodLabels: true
-    # When enabled the processor will extra all annotations for an associated pod and add them as resource attributes.
-    # The annotation's exact name will be the key.
-    extractAllPodAnnotations: true
-  # Configures the collector to collect node, pod, and container metrics from the API server on a kubelet..
-  # Adds the kubeletstats receiver to the metrics pipeline and adds the necessary rules to ClusterRole.
-  # More Info: https://opentelemetry.io/docs/kubernetes/collector/components/#kubeletstats-receiver
-  kubeletMetrics:
-    enabled: true
+
+# Presets disabled - configuring manually to avoid invalid 'otel_annotations' key
+# presets:
+#   logsCollection:
+#     enabled: true
+#   hostMetrics:
+#     enabled: true
+#   kubeletMetrics:
+#     enabled: true
 
 extraEnvs:
   - name: HYPERDX_API_KEY
@@ -50,51 +37,101 @@ extraEnvs:
       configMapKeyRef:
         name: otel-config-vars
         key: OTEL_COLLECTOR_ENDPOINT
+  - name: K8S_NODE_NAME
+    valueFrom:
+      fieldRef:
+        fieldPath: spec.nodeName
 
 config:
   receivers:
-    # Configures additional kubelet metrics
+    filelog:
+      include:
+        - /var/log/pods/*/*/*.log
+      include_file_path: true
+      start_at: end
+      operators:
+        - id: container-parser
+          type: container
+
+    hostmetrics:
+      collection_interval: 30s
+      scrapers:
+        cpu: {}
+        memory: {}
+        disk: {}
+        filesystem: {}
+        network: {}
+
+    # Configures kubelet metrics
     kubeletstats:
       collection_interval: 20s
-      auth_type: 'serviceAccount'
-      endpoint: '${env:K8S_NODE_NAME}:10250'
+      auth_type: "serviceAccount"
+      endpoint: "https://${env:K8S_NODE_NAME}:10250"
       insecure_skip_verify: true
-      metrics:
-        k8s.pod.cpu_limit_utilization:
-          enabled: true
-        k8s.pod.cpu_request_utilization:
-          enabled: true
-        k8s.pod.memory_limit_utilization:
-          enabled: true
-        k8s.pod.memory_request_utilization:
-          enabled: true
-        k8s.pod.uptime:
-          enabled: true
-        k8s.node.uptime:
-          enabled: true
-        k8s.container.cpu_limit_utilization:
-          enabled: true
-        k8s.container.cpu_request_utilization:
-          enabled: true
-        k8s.container.memory_limit_utilization:
-          enabled: true
-        k8s.container.memory_request_utilization:
-          enabled: true
-        container.uptime:
-          enabled: true
- 
+      # Note: kubeletstats automatically collects all available metrics from kubelet API,
+      # including: k8s.pod.cpu_limit_utilization, k8s.pod.cpu_request_utilization,
+      # k8s.pod.memory_limit_utilization, k8s.pod.memory_request_utilization, k8s.pod.uptime,
+      # k8s.node.uptime, k8s.container.cpu_limit_utilization, k8s.container.cpu_request_utilization,
+      # k8s.container.memory_limit_utilization, k8s.container.memory_request_utilization,
+      # container.uptime, and many others. No metrics configuration needed.
+
+  processors:
+    memory_limiter:
+      check_interval: 1s
+      limit_mib: 200
+      spike_limit_mib: 40
+
+    batch:
+      send_batch_size: 512
+      send_batch_max_size: 1024
+      timeout: 10s
+
+    k8sattributes:
+      auth_type: serviceAccount
+      passthrough: false
+      extract:
+        metadata:
+          - k8s.pod.name
+          - k8s.pod.uid
+          - k8s.namespace.name
+          - k8s.node.name
+        labels:
+          - tag_name: app.label.component
+            key: app.kubernetes.io/component
+            from: pod
+      pod_association:
+        - sources:
+            - from: resource_attribute
+              name: k8s.pod.ip
+        - sources:
+            - from: resource_attribute
+              name: k8s.pod.uid
+
   exporters:
     otlphttp:
-      endpoint: "${env:YOUR_OTEL_COLLECTOR_ENDPOINT}"
+      endpoint: "${env:OTEL_COLLECTOR_ENDPOINT}"
       compression: gzip
       headers:
         authorization: "${env:HYPERDX_API_KEY}"
- 
+
   service:
     pipelines:
       logs:
+        receivers:
+          - filelog
+        processors:
+          - memory_limiter
+          - k8sattributes
+          - batch
         exporters:
           - otlphttp
       metrics:
+        receivers:
+          - hostmetrics
+          - kubeletstats
+        processors:
+          - memory_limiter
+          - k8sattributes
+          - batch
         exporters:
           - otlphttp
