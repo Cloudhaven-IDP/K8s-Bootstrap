@@ -112,7 +112,6 @@
 #           processors: [k8sattributes, batch]
 #           exporters: [otlphttp, debug]
 ---
-
 apiVersion: opentelemetry.io/v1beta1
 kind: OpenTelemetryCollector
 metadata:
@@ -124,7 +123,7 @@ metadata:
 spec:
   mode: daemonset
   image: otel/opentelemetry-collector-contrib:0.123.0
-  
+
   resources:
     requests:
       cpu: 100m
@@ -132,7 +131,7 @@ spec:
     limits:
       cpu: 500m
       memory: 256Mi
-  
+
   env:
     - name: K8S_NODE_NAME
       valueFrom:
@@ -143,7 +142,7 @@ spec:
         secretKeyRef:
           key: HYPERDX_API_KEY
           name: hyperdx-secret
-  
+
   volumes:
     - name: varlogpods
       hostPath:
@@ -153,7 +152,7 @@ spec:
       hostPath:
         path: /var/lib/docker/containers
         type: DirectoryOrCreate
-  
+
   volumeMounts:
     - name: varlogpods
       mountPath: /var/log/pods
@@ -161,7 +160,7 @@ spec:
     - name: dockercontainers
       mountPath: /var/lib/docker/containers
       readOnly: true
-  
+
   config:
     receivers:
       filelog:
@@ -172,7 +171,7 @@ spec:
         operators:
           - id: container-parser
             type: container
-      
+
       hostmetrics:
         collection_interval: 30s
         scrapers:
@@ -181,35 +180,35 @@ spec:
           disk: {}
           filesystem: {}
           network: {}
-      
+
       kubeletstats:
-        auth_type: 'serviceAccount'
+        auth_type: "serviceAccount"
         collection_interval: 30s
         endpoint: https://${env:K8S_NODE_NAME}:10250
         insecure_skip_verify: true
-        metrics:
-        k8s.pod.cpu_limit_utilization:
-          enabled: true
-        k8s.pod.cpu_request_utilization:
-          enabled: true
-        k8s.pod.memory_limit_utilization:
-          enabled: true
-        k8s.pod.memory_request_utilization:
-          enabled: true
-        k8s.pod.uptime:
-          enabled: true
-        k8s.node.uptime:
-          enabled: true
-        k8s.container.cpu_limit_utilization:
-          enabled: true
-        k8s.container.cpu_request_utilization:
-          enabled: true
-        k8s.container.memory_limit_utilization:
-          enabled: true
-        k8s.container.memory_request_utilization:
-          enabled: true
-        container.uptime:
-          enabled: true
+        # metrics:
+        # k8s.pod.cpu_limit_utilization:
+        #   enabled: true
+        # k8s.pod.cpu_request_utilization:
+        #   enabled: true
+        # k8s.pod.memory_limit_utilization:
+        #   enabled: true
+        # k8s.pod.memory_request_utilization:
+        #   enabled: true
+        # k8s.pod.uptime:
+        #   enabled: true
+        # k8s.node.uptime:
+        #   enabled: true
+        # k8s.container.cpu_limit_utilization:
+        #   enabled: true
+        # k8s.container.cpu_request_utilization:
+        #   enabled: true
+        # k8s.container.memory_limit_utilization:
+        #   enabled: true
+        # k8s.container.memory_request_utilization:
+        #   enabled: true
+        # container.uptime:
+        #   enabled: true
     
     processors:
       memory_limiter:
@@ -235,7 +234,7 @@ spec:
             - tag_name: app.label.component
               key: app.kubernetes.io/component
               from: pod
-    
+
     exporters:
       otlphttp:
         endpoint: http://clickstack-otel-collector.observability.svc.cluster.local:4318
@@ -250,14 +249,14 @@ spec:
           max_elapsed_time: 300s
       debug:
         verbosity: basic
-    
+
     service:
       telemetry:
         logs:
           level: info
         metrics:
           address: :8888
-      
+
       pipelines:
         logs:
           receivers:
