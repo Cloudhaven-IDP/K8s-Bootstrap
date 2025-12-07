@@ -17,3 +17,15 @@ helmCharts:
     releaseName: clickstack
     namespace: observability
     valuesFile: resources/values.yaml
+
+  - name: cluster-event-collector
+    repo: https://open-telemetry.github.io/opentelemetry-helm-charts
+    releaseName: cluster-event-collector
+    namespace: observability
+    valuesFile: resources/k8s_deployment.yaml # values directly from hyperdx documentation
+
+  - name: cluster-metrics-collector
+    repo: https://open-telemetry.github.io/opentelemetry-helm-charts
+    releaseName: cluster-event-collector
+    namespace: observability
+    valuesFile: resources/k8s_daemonset.yaml
