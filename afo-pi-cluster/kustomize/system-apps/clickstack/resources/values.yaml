@@ -44,8 +44,8 @@ hyperdx:
   #     limits:
   #       cpu: 100m
   #       memory: 128Mi
-  # useExistingConfigSecret: true
-  # existingConfigSecret: "hyperdx-secret"
+  useExistingConfigSecret: true
+  existingConfigSecret: "hyperdx-secret"
   # existingConfigConnectionsKey: "connections.json"
   # existingConfigSourcesKey: "sources.json"
   # frontendUrl: "https://hyperdx.cloudhaven.work"
