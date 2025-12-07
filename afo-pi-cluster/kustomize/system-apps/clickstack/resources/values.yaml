@@ -1,25 +1,30 @@
-# global:
-#   storageClassName: longhorn
+global:
+  storageClassName: longhorn
 
 clickhouse:
-  replicaCount: 2
+  replicaCount: 1
   resources:
+    requests:
+      cpu: 200m
+      memory: 1Gi
     limits:
       cpu: 500m
+      memory: 1.5Gi
   persistence:
     enabled: true
     size: 50Gi
 
 mongodb:
   resources:
+    requests:
+      cpu: 200m
+      memory: 256Mi
     limits:
       cpu: 500m
-      memory: 512Mi
+      memory: 384Mi
   persistence:
     enabled: true
     dataSize: 20Gi
-
-
 # hyperdx:
 #   useExistingConfigSecret: true
 #   existingConfigSecret: "hyperdx-secret"

@@ -4,4 +4,4 @@ metadata:
   name: otel-config-vars
   namespace: observability
 data:
-  YOUR_OTEL_COLLECTOR_ENDPOINT: http://clickstack-otel-collector:4318
+  OTEL_COLLECTOR_ENDPOINT: http://clickstack-otel-collector.observability.svc.cluster.local:4318

@@ -1,113 +1,121 @@
-# apiVersion: opentelemetry.io/v1beta1
-# kind: OpenTelemetryCollector
-# metadata:
-#   name: cluster-otel
-#   namespace: observability
-# spec:
-#   mode: daemonset
-#   image: otel/opentelemetry-collector-contrib:0.123.0
+apiVersion: opentelemetry.io/v1beta1
+kind: OpenTelemetryCollector
+metadata:
+  name: cluster-otel
+  namespace: observability
+spec:
+  mode: daemonset
+  image: otel/opentelemetry-collector-contrib:0.123.0
 
-#   env:
-#     - name: K8S_NODE_NAME
-#       valueFrom:
-#         fieldRef:
-#           fieldPath: spec.nodeName
-#     - name: HYPERDX_API_KEY
-#       valueFrom:
-#         secretKeyRef:
-#           name: hyperdx-secret
-#           key: HYPERDX_API_KEY
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
 
-#   volumeMounts:
-#     - name: varlogpods
-#       mountPath: /var/log/pods
-#       readOnly: true
-#     - name: dockercontainers
-#       mountPath: /var/lib/docker/containers
-#       readOnly: true
+  env:
+    - name: K8S_NODE_NAME
+      valueFrom:
+        fieldRef:
+          fieldPath: spec.nodeName
+    - name: HYPERDX_API_KEY
+      valueFrom:
+        secretKeyRef:
+          name: hyperdx-secret
+          key: HYPERDX_API_KEY
 
-#   volumes:
-#     - name: varlogpods
-#       hostPath:
-#         path: /var/log/pods
-#         type: DirectoryOrCreate
-#     - name: dockercontainers
-#       hostPath:
-#         path: /var/lib/docker/containers
-#         type: DirectoryOrCreate
-# # using presets
-#   presets:
-#     logsCollection:
-#       enabled: true
-#     hostMetrics:
-#       enabled: true
-#     kubernetesAttributes:
-#       enabled: true
-#       extractAllPodLabels: true
-#       extractAllPodAnnotations: true
-#     kubeletMetrics:
-#       enabled: true
+  volumeMounts:
+    - name: varlogpods
+      mountPath: /var/log/pods
+      readOnly: true
+    - name: dockercontainers
+      mountPath: /var/lib/docker/containers
+      readOnly: true
 
-#   config:
-#     receivers:
-#       kubeletstats:
-#         collection_interval: 20s
-#         auth_type: serviceAccount
-#         endpoint: "https://${env:K8S_NODE_NAME}:10250"
-#         insecure_skip_verify: true
+  volumes:
+    - name: varlogpods
+      hostPath:
+        path: /var/log/pods
+        type: DirectoryOrCreate
+    - name: dockercontainers
+      hostPath:
+        path: /var/lib/docker/containers
+        type: DirectoryOrCreate
+  # using presets
+  presets:
+    logsCollection:
+      enabled: true
+    hostMetrics:
+      enabled: true
+    kubernetesAttributes:
+      enabled: true
+      extractAllPodLabels: true
+      extractAllPodAnnotations: true
+    kubeletMetrics:
+      enabled: true
 
-#       # filelog is already wired in by logsCollection preset, but we can be explicit
-#       filelog:
-#         include:
-#           - /var/log/pods/*/*/*.log
-#         start_at: end
-#         include_file_path: true
-#         operators:
-#           - type: container
-#             id: container-parser
+  config:
+    receivers:
+      kubeletstats:
+        collection_interval: 20s
+        auth_type: serviceAccount
+        endpoint: "https://${env:K8S_NODE_NAME}:10250"
+        insecure_skip_verify: true
 
-#       hostmetrics:
-#         collection_interval: 20s
-#         scrapers:
-#           cpu: {}
-#           memory: {}
-#           disk: {}
-#           filesystem: {}
-#           network: {}
+      # filelog is already wired in by logsCollection preset, but we can be explicit
+      filelog:
+        include:
+          - /var/log/pods/*/*/*.log
+        start_at: end
+        include_file_path: true
+        operators:
+          - type: container
+            id: container-parser
 
-#     processors:
-#       k8sattributes:
-#         auth_type: serviceAccount
-#         extract:
-#           metadata:
-#             - k8s.pod.name
-#             - k8s.pod.uid
-#             - k8s.namespace.name
-#             - k8s.node.name
-#       batch: {}
+      hostmetrics:
+        collection_interval: 20s
+        scrapers:
+          cpu: {}
+          memory: {}
+          disk: {}
+          filesystem: {}
+          network: {}
 
-#     exporters:
-#       otlphttp:
-#         endpoint: "http://clickstack-otel-collector.observability.svc.cluster.local:4318"
-#         compression: gzip
-#         headers:
-#           authorization: "${env:HYPERDX_API_KEY}"
+    processors:
+      k8sattributes:
+        auth_type: serviceAccount
+        extract:
+          metadata:
+            - k8s.pod.name
+            - k8s.pod.uid
+            - k8s.namespace.name
+            - k8s.node.name
+      batch: {}
 
-#       debug:
-#         verbosity: detailed
+    exporters:
+      otlphttp:
+        endpoint: "http://clickstack-otel-collector.observability.svc.cluster.local:4318"
+        compression: gzip
+        headers:
+          authorization: "${env:HYPERDX_API_KEY}"
 
-#     service:
-#       telemetry:
-#         logs:
-#           level: "debug"
+      debug:
+        verbosity: detailed
 
-#       pipelines:
-#         logs:
-#           receivers: [filelog]
-#           processors: [k8sattributes, batch]
-#           exporters: [otlphttp, debug]
+    service:
+      telemetry:
+        logs:
+          level: "debug"
 
-#         metrics:
-#           receivers: [hostmetrics, kubeletstats]
-#           processors: [k8sattributes, batch]
-#           exporters: [otlphttp, debug]
+      pipelines:
+        logs:
+          receivers: [filelog]
+          processors: [k8sattributes, batch]
+          exporters: [otlphttp, debug]
+
+        metrics:
+          receivers: [hostmetrics, kubeletstats]
+          processors: [k8sattributes, batch]
+          exporters: [otlphttp, debug]

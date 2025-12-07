@@ -9,6 +9,9 @@ kubeconfig.yml
 *.kubeconfig
 *.kubeconfig.yaml
 *.kubeconfig.yml
+kubectl
+charts/
+.DS_Store
 
 # kubectl cache
 .kube/cache/
@@ -142,3 +145,5 @@ tmp/
 *.bak
 *.out
 *.pid
+
+
