@@ -3,6 +3,13 @@ global:
 
 clickhouse:
   replicaCount: 1
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: node-role.kubernetes.io/worker
+                operator: Exists
   resources:
     requests:
       cpu: 200m
