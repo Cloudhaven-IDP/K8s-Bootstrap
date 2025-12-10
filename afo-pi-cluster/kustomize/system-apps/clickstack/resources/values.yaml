@@ -44,6 +44,8 @@ hyperdx:
   #frontendUrl: "https://hyperdx.cloudhaven.work"
   ingress:
     enabled: false
+  service:
+    type: LoadBalancer
   resources:
     requests:
       cpu: 100m
