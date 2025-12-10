@@ -45,6 +45,14 @@ config:
       collection_interval: 10s
       auth_type: serviceAccount
 
+    prometheus:
+      config:
+        scrape_configs:
+          - job_name: kube-state-metrics
+            static_configs:
+              - targets: ['kube-state-metrics.observability.svc:8080']
+            scrape_interval: 30s
+
   processors:
     memory_limiter:
       check_interval: 1s
@@ -98,6 +106,7 @@ config:
       metrics:
         receivers:
           - k8s_cluster
+          - prometheus
         processors:
           - memory_limiter
           - k8sattributes

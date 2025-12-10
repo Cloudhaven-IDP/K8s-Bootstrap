@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: clickstack
+  name: observability-stack
   namespace: argocd
 spec:
   project: pi-cluster-system-apps
