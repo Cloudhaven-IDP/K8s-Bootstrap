@@ -15,3 +15,9 @@ persistence:
 
 service:
   type: LoadBalancer
+
+config:
+  service:
+    api_key:
+      existingSecret: qdrant-api-key
+      secretKey: api-key

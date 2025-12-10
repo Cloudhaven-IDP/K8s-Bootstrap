@@ -5,6 +5,7 @@ namespace: qdrant
 
 resources:
   - resources/namespace.yaml
+  - resources/external-secret.yaml
 
 helmCharts:
   - name: qdrant
