@@ -15,8 +15,3 @@ persistence:
 
 service:
   type: LoadBalancer
-  ports:
-    - name: http
-      port: 6333
-    - name: grpc
-      port: 6334
