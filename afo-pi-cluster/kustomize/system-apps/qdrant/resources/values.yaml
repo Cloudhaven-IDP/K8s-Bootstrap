@@ -19,3 +19,7 @@ service:
 apiKey:
   existingSecret: qdrant-api-key
   secretKey: api-key
+
+config:
+  service:
+    jwt_rbac: true
