@@ -1,0 +1,22 @@
+replicaCount: 1
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+persistence:
+  enabled: true
+  size: 5Gi
+  storageClassName: longhorn
+
+service:
+  type: LoadBalancer
+  ports:
+    - name: http
+      port: 6333
+    - name: grpc
+      port: 6334
