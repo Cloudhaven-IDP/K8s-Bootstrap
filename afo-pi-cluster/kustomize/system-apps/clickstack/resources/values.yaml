@@ -35,6 +35,13 @@ mongodb:
     dataSize: 20Gi
 
 otel:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: node-role.kubernetes.io/worker
+                operator: Exists
   resources:
     requests:
       cpu: 100m

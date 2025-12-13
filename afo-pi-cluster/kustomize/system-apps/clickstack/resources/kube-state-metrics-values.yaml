@@ -1,28 +1,28 @@
-resources:
-  requests:
-    cpu: 10m
-    memory: 32Mi
-  limits:
-    cpu: 100m
-    memory: 128Mi
+# resources:
+#   requests:
+#     cpu: 10m
+#     memory: 32Mi
+#   limits:
+#     cpu: 100m
+#     memory: 128Mi
 
-collectors:
-  - deployments
-  - pods
-  - nodes
-  - replicasets
-  - statefulsets
-  - daemonsets
-  - jobs
-  - cronjobs
-  - namespaces
-  - persistentvolumeclaims
-  - persistentvolumes
-  - services
-  - resourcequotas
-  - limitranges
+# collectors:
+#   - deployments
+#   - pods
+#   - nodes
+#   - replicasets
+#   - statefulsets
+#   - daemonsets
+#   - jobs
+#   - cronjobs
+#   - namespaces
+#   - persistentvolumeclaims
+#   - persistentvolumes
+#   - services
+#   - resourcequotas
+#   - limitranges
 
-metricLabelsAllowlist:
-  - pods=[app,app.kubernetes.io/name,app.kubernetes.io/component]
-  - deployments=[app,app.kubernetes.io/name]
-  - nodes=[kubernetes.io/hostname]
+# metricLabelsAllowlist:
+#   - pods=[app,app.kubernetes.io/name,app.kubernetes.io/component]
+#   - deployments=[app,app.kubernetes.io/name]
+#   - nodes=[kubernetes.io/hostname]
