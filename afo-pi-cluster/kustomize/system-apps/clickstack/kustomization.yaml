@@ -8,7 +8,7 @@ resources:
   - resources/configmap.yaml
   - resources/cluster-collector.yaml
   - resources/rbac.yaml
-  - resources/resourcequota.yaml
+  #- resources/resourcequota.yaml
 
 helmCharts:
   - name: clickstack
