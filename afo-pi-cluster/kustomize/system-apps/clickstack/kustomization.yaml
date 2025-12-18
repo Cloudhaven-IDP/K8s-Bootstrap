@@ -16,22 +16,22 @@ helmCharts:
     repo: https://hyperdxio.github.io/helm-charts
     releaseName: clickstack
     namespace: observability
-    valuesFile: resources/values.yaml
+    valuesFile: values/clickstack_values.yaml
 
   - name: opentelemetry-collector
     repo: https://open-telemetry.github.io/opentelemetry-helm-charts
     releaseName: cluster-event-collector
     namespace: observability
-    valuesFile: resources/k8s_deployment.yaml # values directly from hyperdx documentation
+    valuesFile: values/k8s_deployment_values.yaml # values directly from hyperdx documentation
 
   - name: opentelemetry-collector
     repo: https://open-telemetry.github.io/opentelemetry-helm-charts
     releaseName: cluster-metrics-collector
     namespace: observability
-    valuesFile: resources/k8s_daemonset.yaml
+    valuesFile: values/k8s_daemonset_values.yaml
 
-  # - name: kube-state-metrics
-  #   repo: https://prometheus-community.github.io/helm-charts
-  #   releaseName: kube-state-metrics
-  #   namespace: observability
-  #   valuesFile: resources/kube-state-metrics-values.yaml
+  - name: kube-state-metrics
+    repo: https://prometheus-community.github.io/helm-charts
+    releaseName: kube-state-metrics
+    namespace: observability
+    valuesFile: values/kube_state_metrics_values.yaml

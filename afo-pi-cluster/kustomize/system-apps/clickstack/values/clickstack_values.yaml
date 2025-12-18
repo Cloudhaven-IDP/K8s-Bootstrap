@@ -4,7 +4,7 @@ global:
 clickhouse:
   replicaCount: 1
   affinity:
-    nodeAffinity:
+    nodeAffinity:  #to allow scheduling between workers
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
           - matchExpressions:
@@ -35,13 +35,8 @@ mongodb:
     dataSize: 20Gi
 
 otel:
-  affinity:
-    nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-          - matchExpressions:
-              - key: node-role.kubernetes.io/worker
-                operator: Exists
+  nodeSelector:
+    opentelemetry.io/collector: "enabled"
   resources:
     requests:
       cpu: 100m
@@ -55,9 +50,23 @@ hyperdx:
   #existingConfigSecret: "hyperdx-secret"
   # existingConfigConnectionsKey: "connections.json"
   # existingConfigSourcesKey: "sources.json"
-  #frontendUrl: "https://hyperdx.cloudhaven.work"
+  frontendUrl: "https://hyperdx.cloudhaven.work"
   ingress:
-    enabled: false
+    enabled: true
+    ingressClassName: nginx
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /$1
+      nginx.ingress.kubernetes.io/use-regex: "true"
+    hosts:
+      - host: "hyperdx.cloudhaven.work"
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: clickstack-app
+                port:
+                  number: 3000
   service:
     type: LoadBalancer
   resources:
