@@ -1,0 +1,9 @@
+installCRDs: true
+
+serviceAccount:
+  create: true
+  name: external-secrets-sa
+  annotations:
+    # TODO: populate after IRSA Terraform module runs
+    # kustomize patch or re-apply with the role ARN from Terraform output
+    eks.amazonaws.com/role-arn: ""
