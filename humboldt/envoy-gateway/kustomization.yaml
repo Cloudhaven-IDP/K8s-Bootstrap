@@ -4,3 +4,7 @@ kind: Kustomization
 resources:
   - https://github.com/envoyproxy/gateway/releases/download/v1.7.2/install.yaml
   - gatewayclass.yaml
+  - gateway-internal.yaml
+  - gateway-external.yaml
+  - envoyproxy-internal.yaml
+  - envoyproxy-external.yaml
