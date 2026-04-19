@@ -1,5 +1,10 @@
 operatorConfig:
   hostname: humboldt-operator
+  defaultTags:
+    - tag:k8s-humboldt
+
+proxyConfig:
+  defaultTags: "tag:k8s-humboldt"
 
 # oauth left empty — ExternalSecret creates the operator-oauth secret
 # from SSM before the operator starts
