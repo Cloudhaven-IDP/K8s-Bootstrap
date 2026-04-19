@@ -1,0 +1,33 @@
+global:
+  domain: argocd.cloudhaven.work
+
+configs:
+  params:
+    # Cloudflare tunnel terminates TLS at the edge — plain HTTP inside the cluster is safe
+    server.insecure: "true"
+
+  cm:
+    url: https://argocd.cloudhaven.work
+
+server:
+  replicas: 1
+  service:
+    servicePortHttpAppProtocol: kubernetes.io/h2c
+
+repoServer:
+  replicas: 1
+
+applicationSet:
+  replicas: 1
+
+controller:
+  replicas: 1
+
+dex:
+  enabled: true  # Kept for future Authentik OIDC integration
+
+redis:
+  enabled: true
+
+redis-ha:
+  enabled: false  # Single-node Redis; enable when HA is needed
