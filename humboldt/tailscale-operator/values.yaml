@@ -1,0 +1,8 @@
+operatorConfig:
+  hostname: humboldt-operator
+
+# oauth left empty — ExternalSecret creates the operator-oauth secret
+# from SSM before the operator starts
+oauth:
+  clientId: ""
+  clientSecret: ""
