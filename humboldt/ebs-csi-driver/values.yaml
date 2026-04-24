@@ -2,3 +2,20 @@ controller:
   serviceAccount:
     annotations:
       eks.amazonaws.com/role-arn: "arn:aws:iam::445746982355:role/humboldt-ebs-csi-controller"
+  env:
+    - name: AWS_ROLE_ARN
+      value: "arn:aws:iam::445746982355:role/humboldt-ebs-csi-controller"
+    - name: AWS_WEB_IDENTITY_TOKEN_FILE
+      value: /var/run/secrets/eks.amazonaws.com/serviceaccount/token
+  volumes:
+    - name: aws-iam-token
+      projected:
+        sources:
+          - serviceAccountToken:
+              audience: sts.amazonaws.com
+              expirationSeconds: 3600
+              path: token
+  volumeMounts:
+    - name: aws-iam-token
+      mountPath: /var/run/secrets/eks.amazonaws.com/serviceaccount
+      readOnly: true
