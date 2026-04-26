@@ -4,6 +4,4 @@ serviceAccount:
   create: true
   name: external-secrets-sa
   annotations:
-    # TODO: populate after IRSA Terraform module runs
-    # kustomize patch or re-apply with the role ARN from Terraform output
-    eks.amazonaws.com/role-arn: ""
+    eks.amazonaws.com/role-arn: "arn:aws:iam::445746982355:role/humboldt-external-secrets-operator"
