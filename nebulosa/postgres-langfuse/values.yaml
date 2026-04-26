@@ -1,0 +1,41 @@
+clusterName: langfuse-pg
+dnsAlias: langfuse.internal.cloudhaven.work
+
+postgres:
+  instances: 1
+
+  storage:
+    storageClass: local-path
+    size: 20Gi
+
+  bootstrap:
+    database: langfuse
+    owner: langfuse
+
+  resources:
+    requests:
+      cpu: 200m
+      memory: 512Mi
+    limits:
+      memory: 1Gi
+
+  affinity:
+    nodeSelector:
+      kubernetes.io/hostname: pi-2
+
+appRoles:
+  - name: langfuse
+    pgRole: langfuse
+    namespace: langfuse
+    database: langfuse
+    schema: public
+    accessMode: admin
+    authMode: password
+
+secretBackend:
+  type: none
+
+coredns:
+  rewrite:
+    enabled: false
+    kubernetesZone: cluster.local
