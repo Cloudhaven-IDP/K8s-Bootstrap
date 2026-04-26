@@ -1,0 +1,7 @@
+installCRDs: true
+
+serviceAccount:
+  create: true
+  name: external-secrets-sa
+  annotations:
+    eks.amazonaws.com/role-arn: "arn:aws:iam::445746982355:role/nebulosa-external-secrets-operator"
