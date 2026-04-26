@@ -1,0 +1,28 @@
+replicaCount: 1
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+persistence:
+  enabled: true
+  size: 5Gi
+  storageClassName: local-path
+
+service:
+  type: ClusterIP
+
+apiKey:
+  existingSecret: qdrant-api-key
+  secretKey: api-key
+
+config:
+  service:
+    jwt_rbac: true
+
+nodeSelector:
+  kubernetes.io/hostname: pi-3
