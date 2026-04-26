@@ -1,0 +1,27 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: tailscale
+
+resources:
+  - namespace.yaml
+  - secretstore.yaml
+  - externalsecret.yaml
+
+patches:
+  - patch: |-
+      apiVersion: v1
+      kind: ServiceAccount
+      metadata:
+        name: operator
+        namespace: tailscale
+        annotations:
+          eks.amazonaws.com/role-arn: "arn:aws:iam::445746982355:role/nebulosa-tailscale-operator"
+
+helmCharts:
+  - name: tailscale-operator
+    repo: https://pkgs.tailscale.com/helmcharts
+    version: 1.96.5
+    releaseName: tailscale-operator
+    namespace: tailscale
+    valuesFile: values.yaml

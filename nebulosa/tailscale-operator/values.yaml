@@ -1,0 +1,11 @@
+operatorConfig:
+  hostname: nebulosa-operator
+  defaultTags:
+    - tag:k8s-worker
+
+proxyConfig:
+  defaultTags: "tag:k8s-worker"
+
+oauth:
+  clientId: ""
+  clientSecret: ""
