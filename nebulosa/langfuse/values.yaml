@@ -1,0 +1,113 @@
+langfuse:
+  salt:
+    secretKeyRef:
+      name: langfuse-secrets
+      key: salt
+  encryptionKey:
+    secretKeyRef:
+      name: langfuse-secrets
+      key: encryption-key
+  nextauth:
+    url: http://langfuse.internal.cloudhaven.work
+    secret:
+      secretKeyRef:
+        name: langfuse-secrets
+        key: nextauth-secret
+
+  serviceAccount:
+    create: true
+    name: langfuse-sa
+    annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::445746982355:role/nebulosa-langfuse
+
+  nodeSelector:
+    kubernetes.io/hostname: pi-3
+
+  additionalEnv:
+    - name: AWS_ROLE_ARN
+      value: arn:aws:iam::445746982355:role/nebulosa-langfuse
+    - name: AWS_WEB_IDENTITY_TOKEN_FILE
+      value: /var/run/secrets/eks.amazonaws.com/serviceaccount/token
+    - name: AWS_REGION
+      value: us-east-1
+
+  extraVolumes:
+    - name: aws-iam-token
+      projected:
+        sources:
+          - serviceAccountToken:
+              audience: sts.amazonaws.com
+              expirationSeconds: 3600
+              path: token
+
+  extraVolumeMounts:
+    - name: aws-iam-token
+      mountPath: /var/run/secrets/eks.amazonaws.com/serviceaccount
+      readOnly: true
+
+  web:
+    replicas: 1
+    resources:
+      requests:
+        cpu: 100m
+        memory: 512Mi
+      limits:
+        memory: 1Gi
+
+  worker:
+    replicas: 1
+    resources:
+      requests:
+        cpu: 100m
+        memory: 512Mi
+      limits:
+        memory: 1Gi
+
+postgresql:
+  deploy: false
+  host: langfuse-pg-rw.langfuse.svc.cluster.local
+  port: 5432
+  auth:
+    username: langfuse
+    database: langfuse
+    existingSecret: langfuse-pg-app
+    secretKeys:
+      userPasswordKey: password
+
+redis:
+  deploy: true
+  auth:
+    existingSecret: langfuse-secrets
+    existingSecretPasswordKey: redis-password
+  master:
+    nodeSelector:
+      kubernetes.io/hostname: pi-2
+    persistence:
+      storageClass: local-path
+      size: 2Gi
+    extraFlags:
+      - "--maxmemory-policy noeviction"
+
+clickhouse:
+  deploy: true
+  shards: 1
+  replicaCount: 1
+  resourcesPreset: small
+  auth:
+    username: default
+    existingSecret: langfuse-secrets
+    existingSecretKey: clickhouse-password
+  nodeSelector:
+    kubernetes.io/hostname: pi-2
+  persistence:
+    storageClass: local-path
+    size: 30Gi
+  zookeeper:
+    enabled: false
+
+s3:
+  deploy: false
+  bucket: nebulosa-langfuse-blobs
+  region: us-east-1
+  endpoint: ""
+  forcePathStyle: false
