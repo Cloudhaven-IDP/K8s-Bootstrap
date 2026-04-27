@@ -8,3 +8,4 @@ resources:
   - gateway-external.yaml
   - envoyproxy-internal.yaml
   - envoyproxy-external.yaml
+  - certificate.yaml
