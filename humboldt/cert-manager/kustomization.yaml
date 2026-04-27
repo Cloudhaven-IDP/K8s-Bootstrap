@@ -5,6 +5,19 @@ namespace: cert-manager
 
 resources:
   - namespace.yaml
+  - secretstore.yaml
+  - externalsecret.yaml
+  - clusterissuer.yaml
+
+patches:
+  - patch: |-
+      apiVersion: v1
+      kind: ServiceAccount
+      metadata:
+        name: cert-manager
+        namespace: cert-manager
+        annotations:
+          eks.amazonaws.com/role-arn: "arn:aws:iam::445746982355:role/humboldt-cert-manager"
 
 helmCharts:
   - name: cert-manager
