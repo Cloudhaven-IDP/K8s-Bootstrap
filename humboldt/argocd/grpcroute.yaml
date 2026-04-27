@@ -7,8 +7,9 @@ spec:
   parentRefs:
     - name: humboldt-internal
       namespace: envoy-gateway-system
+      sectionName: https
   hostnames:
-    - argocd.cloudhaven.work
+    - argocd.internal.cloudhaven.work
   rules:
     - backendRefs:
         - name: argocd-server

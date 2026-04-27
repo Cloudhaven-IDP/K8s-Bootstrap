@@ -1,5 +1,5 @@
 global:
-  domain: argocd.cloudhaven.work
+  domain: argocd.internal.cloudhaven.work
 
 configs:
   params:
@@ -7,7 +7,9 @@ configs:
     server.insecure: "true"
 
   cm:
-    url: https://argocd.cloudhaven.work
+    url: https://argocd.internal.cloudhaven.work
+    kustomize.buildOptions: "--enable-helm"
+    accounts.admin: apiKey, login
 
 server:
   replicas: 1

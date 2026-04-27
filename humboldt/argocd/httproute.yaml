@@ -8,7 +8,7 @@ spec:
     - name: humboldt-internal
       namespace: envoy-gateway-system
   hostnames:
-    - argocd.cloudhaven.work
+    - argocd.internal.cloudhaven.work
   rules:
     - matches:
         - path:
