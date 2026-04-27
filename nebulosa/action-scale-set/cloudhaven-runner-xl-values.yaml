@@ -2,6 +2,10 @@ githubConfigUrl: https://github.com/Cloudhaven-IDP
 
 githubConfigSecret: github-app
 
+controllerServiceAccount:
+  namespace: arc
+  name: arc-gha-rs-controller
+
 minRunners: 0
 maxRunners: 2
 
