@@ -1,0 +1,83 @@
+deploymentMode: SingleBinary
+
+loki:
+  auth_enabled: false
+  commonConfig:
+    replication_factor: 1
+  storage:
+    type: s3
+    bucketNames:
+      chunks: nebulosa-loki-chunks
+      ruler: nebulosa-loki-chunks
+    s3:
+      region: us-east-1
+  schemaConfig:
+    configs:
+      - from: "2024-01-01"
+        store: tsdb
+        object_store: s3
+        schema: v13
+        index:
+          prefix: index_
+          period: 24h
+
+serviceAccount:
+  create: true
+  name: loki-sa
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::445746982355:role/nebulosa-loki
+
+singleBinary:
+  replicas: 1
+  nodeSelector:
+    kubernetes.io/hostname: pi-1
+  persistence:
+    enabled: true
+    size: 2Gi
+    storageClass: local-path
+  extraEnv:
+    - name: AWS_ROLE_ARN
+      value: arn:aws:iam::445746982355:role/nebulosa-loki
+    - name: AWS_WEB_IDENTITY_TOKEN_FILE
+      value: /var/run/secrets/eks.amazonaws.com/serviceaccount/token
+    - name: AWS_REGION
+      value: us-east-1
+  extraVolumes:
+    - name: aws-iam-token
+      projected:
+        sources:
+          - serviceAccountToken:
+              audience: sts.amazonaws.com
+              expirationSeconds: 3600
+              path: token
+  extraVolumeMounts:
+    - name: aws-iam-token
+      mountPath: /var/run/secrets/eks.amazonaws.com/serviceaccount
+      readOnly: true
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 384Mi
+
+# Disable microservice components
+read:
+  replicas: 0
+write:
+  replicas: 0
+backend:
+  replicas: 0
+
+# Disable gateway and local object storage
+gateway:
+  enabled: false
+minio:
+  enabled: false
+
+# Disable caches (saves memory on RPi)
+chunksCache:
+  enabled: false
+resultsCache:
+  enabled: false

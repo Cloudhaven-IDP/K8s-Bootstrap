@@ -1,0 +1,60 @@
+replicas: 1
+
+admin:
+  existingSecret: grafana-secrets
+  userKey: admin-user
+  passwordKey: admin-password
+
+serviceAccount:
+  create: true
+  name: grafana-sa
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::445746982355:role/nebulosa-grafana
+
+extraEnv:
+  - name: AWS_ROLE_ARN
+    value: arn:aws:iam::445746982355:role/nebulosa-grafana
+  - name: AWS_WEB_IDENTITY_TOKEN_FILE
+    value: /var/run/secrets/eks.amazonaws.com/serviceaccount/token
+  - name: AWS_REGION
+    value: us-east-1
+
+extraVolumes:
+  - name: aws-iam-token
+    projected:
+      sources:
+        - serviceAccountToken:
+            audience: sts.amazonaws.com
+            expirationSeconds: 3600
+            path: token
+
+extraVolumeMounts:
+  - name: aws-iam-token
+    mountPath: /var/run/secrets/eks.amazonaws.com/serviceaccount
+    readOnly: true
+
+persistence:
+  enabled: true
+  size: 2Gi
+  storageClassName: local-path
+
+nodeSelector:
+  kubernetes.io/hostname: pi-1
+
+service:
+  type: ClusterIP
+  port: 80
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
+
+# Datasources are managed by Terraform — do not configure here
+datasources: {}
+grafana.ini:
+  server:
+    root_url: http://grafana.internal.cloudhaven.work
