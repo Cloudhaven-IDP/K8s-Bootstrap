@@ -1,0 +1,33 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: arc
+
+resources:
+  - namespace.yaml
+  - serviceaccount.yaml
+  - external-secret.yaml
+
+helmCharts:
+  - name: gha-runner-scale-set-controller
+    repo: oci://ghcr.io/actions/actions-runner-controller-charts
+    version: 0.9.3
+    releaseName: arc
+    namespace: arc
+    valuesFile: controller-values.yaml
+  - name: gha-runner-scale-set
+    repo: oci://ghcr.io/actions/actions-runner-controller-charts
+    version: 0.9.3
+    releaseName: cloudhaven-runner
+    namespace: arc
+    valuesFile: cloudhaven-runner-values.yaml
+  - name: gha-runner-scale-set
+    repo: oci://ghcr.io/actions/actions-runner-controller-charts
+    version: 0.9.3
+    releaseName: cloudhaven-runner-xl
+    namespace: arc
+    valuesFile: cloudhaven-runner-xl-values.yaml
+
+images:
+  - name: ghcr.io/cloudhaven-idp/gha-runner
+    newTag: 7c84f4f0a7730b0ab473ff15db65fa307489cba5

@@ -1,0 +1,21 @@
+githubConfigUrl: https://github.com/Cloudhaven-IDP
+
+githubConfigSecret: github-app
+
+minRunners: 0
+maxRunners: 2
+
+template:
+  spec:
+    containers:
+      - name: runner
+        image: ghcr.io/cloudhaven-idp/gha-runner:placeholder
+        imagePullPolicy: IfNotPresent
+        command: ["/home/runner/run.sh"]
+        resources:
+          requests:
+            cpu: "2"
+            memory: 4Gi
+          limits:
+            cpu: "4"
+            memory: 8Gi
