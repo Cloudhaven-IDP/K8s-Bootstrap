@@ -17,3 +17,14 @@ spec:
       allowedRoutes:
         namespaces:
           from: All
+    - name: https
+      protocol: HTTPS
+      port: 443
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - name: internal-gateway-cert-tls
+            kind: Secret
+      allowedRoutes:
+        namespaces:
+          from: All
