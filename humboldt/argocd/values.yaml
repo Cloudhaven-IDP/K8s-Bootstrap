@@ -10,6 +10,7 @@ configs:
     url: https://argocd.internal.cloudhaven.work
     kustomize.buildOptions: "--enable-helm"
     accounts.admin: apiKey, login
+    application.resourceTrackingMethod: annotation
 
 server:
   replicas: 1
