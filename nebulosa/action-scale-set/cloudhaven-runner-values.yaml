@@ -6,11 +6,13 @@ controllerServiceAccount:
   namespace: arc
   name: arc-gha-rs-controller
 
-minRunners: 1
+minRunners: 0
 maxRunners: 5
 
 template:
   spec:
+    imagePullSecrets:
+      - name: ghcr-pull
     containers:
       - name: runner
         image: ghcr.io/cloudhaven-idp/gha-runner:placeholder
@@ -18,8 +20,8 @@ template:
         command: ["/home/runner/run.sh"]
         resources:
           requests:
-            cpu: 500m
-            memory: 1Gi
+            cpu: 100m
+            memory: 256Mi
           limits:
             cpu: "1"
-            memory: 2Gi
+            memory: 1Gi

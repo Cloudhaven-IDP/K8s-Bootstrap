@@ -11,6 +11,8 @@ maxRunners: 2
 
 template:
   spec:
+    imagePullSecrets:
+      - name: ghcr-pull
     containers:
       - name: runner
         image: ghcr.io/cloudhaven-idp/gha-runner:placeholder
@@ -18,8 +20,8 @@ template:
         command: ["/home/runner/run.sh"]
         resources:
           requests:
+            cpu: 500m
+            memory: 1Gi
+          limits:
             cpu: "2"
             memory: 4Gi
-          limits:
-            cpu: "4"
-            memory: 8Gi
