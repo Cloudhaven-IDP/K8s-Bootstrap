@@ -110,6 +110,162 @@ alloy:
         forward_to = [loki.write.default.receiver]
       }
 
+      discovery.kubernetes "nodes" {
+        role = "node"
+      }
+
+      discovery.relabel "kubelet" {
+        targets = discovery.kubernetes.nodes.targets
+
+        rule {
+          action = "labelmap"
+          regex  = "__meta_kubernetes_node_label_(.+)"
+        }
+        rule {
+          target_label = "__address__"
+          replacement  = "kubernetes.default.svc:443"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_node_name"]
+          regex         = "(.+)"
+          target_label  = "__metrics_path__"
+          replacement   = "/api/v1/nodes/${1}/proxy/metrics"
+        }
+      }
+
+      discovery.relabel "cadvisor" {
+        targets = discovery.kubernetes.nodes.targets
+
+        rule {
+          action = "labelmap"
+          regex  = "__meta_kubernetes_node_label_(.+)"
+        }
+        rule {
+          target_label = "__address__"
+          replacement  = "kubernetes.default.svc:443"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_node_name"]
+          regex         = "(.+)"
+          target_label  = "__metrics_path__"
+          replacement   = "/api/v1/nodes/${1}/proxy/metrics/cadvisor"
+        }
+      }
+
+      prometheus.scrape "kubelet" {
+        targets           = discovery.relabel.kubelet.output
+        job_name          = "kubelet"
+        scheme            = "https"
+        scrape_interval   = "30s"
+        bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+        tls_config {
+          ca_file              = "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+          insecure_skip_verify = true
+        }
+        forward_to = [prometheus.remote_write.victoriametrics.receiver]
+      }
+
+      prometheus.scrape "cadvisor" {
+        targets           = discovery.relabel.cadvisor.output
+        job_name          = "cadvisor"
+        scheme            = "https"
+        scrape_interval   = "30s"
+        bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+        tls_config {
+          ca_file              = "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+          insecure_skip_verify = true
+        }
+        forward_to = [prometheus.remote_write.victoriametrics.receiver]
+      }
+
+      discovery.kubernetes "apiserver" {
+        role = "endpoints"
+        namespaces {
+          names = ["default"]
+        }
+        selectors {
+          role  = "endpoints"
+          field = "metadata.name=kubernetes"
+        }
+      }
+
+      prometheus.scrape "apiserver" {
+        targets           = discovery.kubernetes.apiserver.targets
+        job_name          = "kubernetes-apiserver"
+        scheme            = "https"
+        scrape_interval   = "30s"
+        bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+        tls_config {
+          ca_file              = "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+          insecure_skip_verify = true
+        }
+        forward_to = [prometheus.remote_write.victoriametrics.receiver]
+      }
+
+      discovery.kubernetes "coredns" {
+        role = "pod"
+        namespaces {
+          names = ["kube-system"]
+        }
+        selectors {
+          role  = "pod"
+          label = "k8s-app=kube-dns"
+        }
+      }
+
+      discovery.relabel "coredns" {
+        targets = discovery.kubernetes.coredns.targets
+
+        rule {
+          source_labels = ["__address__"]
+          regex         = "([^:]+)(?::\\d+)?"
+          target_label  = "__address__"
+          replacement   = "${1}:9153"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_name"]
+          target_label  = "pod"
+        }
+      }
+
+      prometheus.scrape "coredns" {
+        targets         = discovery.relabel.coredns.output
+        job_name        = "coredns"
+        scrape_interval = "30s"
+        forward_to      = [prometheus.remote_write.victoriametrics.receiver]
+      }
+
+      discovery.kubernetes "node_exporter" {
+        role = "pod"
+        namespaces {
+          names = ["observability"]
+        }
+        selectors {
+          role  = "pod"
+          label = "app.kubernetes.io/name=prometheus-node-exporter"
+        }
+      }
+
+      discovery.relabel "node_exporter" {
+        targets = discovery.kubernetes.node_exporter.targets
+
+        rule {
+          source_labels = ["__meta_kubernetes_pod_node_name"]
+          target_label  = "node"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_name"]
+          target_label  = "pod"
+        }
+      }
+
+      prometheus.scrape "node_exporter" {
+        targets         = discovery.relabel.node_exporter.output
+        job_name        = "node-exporter"
+        scrape_interval = "30s"
+        forward_to      = [prometheus.remote_write.victoriametrics.receiver]
+      }
+
       prometheus.scrape "kube_state_metrics" {
         targets = [{
           __address__ = "kube-state-metrics.observability.svc.cluster.local:8080",
@@ -121,7 +277,10 @@ alloy:
 
       prometheus.remote_write "victoriametrics" {
         endpoint {
-          url = "http://victoriametrics-placeholder.example.com/api/v1/write"
+          url = "http://vmsingle.observability.svc.cluster.local:8428/api/v1/write"
+        }
+        external_labels = {
+          cluster = "nebulosa",
         }
       }
 

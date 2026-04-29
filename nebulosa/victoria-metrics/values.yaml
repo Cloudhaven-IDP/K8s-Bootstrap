@@ -1,0 +1,29 @@
+fullnameOverride: vmsingle
+
+server:
+  retentionPeriod: 30d
+  persistentVolume:
+    enabled: true
+    size: 20Gi
+    storageClassName: local-path
+  nodeSelector:
+    kubernetes.io/hostname: pi-3
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 1Gi
+  service:
+    type: ClusterIP
+    servicePort: 8428
+  statefulSet:
+    enabled: true
+  extraArgs:
+    dedup.minScrapeInterval: 30s
+
+automount: true
+
+serviceMonitor:
+  enabled: false

@@ -1,0 +1,20 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: victoriametrics-web
+  namespace: observability
+spec:
+  parentRefs:
+    - name: nebulosa-internal
+      namespace: envoy-gateway-system
+      sectionName: http
+  hostnames:
+    - victoriametrics.internal.cloudhaven.work
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: vmsingle
+          port: 8428
