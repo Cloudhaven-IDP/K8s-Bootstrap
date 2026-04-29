@@ -41,18 +41,19 @@ jobs:
       - name: Fetch kubeconfig from Secrets Manager
         uses: aws-actions/aws-secretsmanager-get-secrets@v2
         with:
-          secret-ids: KUBECONFIG,${{ inputs.cluster }}/kubeconfig
+          secret-ids: KUBECONFIG_BLOB,${{ inputs.cluster }}/kubeconfig
           parse-json-secrets: false
 
       - name: Write kubeconfig
         run: |
           mkdir -p ~/.kube
-          if echo "$KUBECONFIG" | jq -e '.kubeconfig' > /dev/null 2>&1; then
-            echo "$KUBECONFIG" | jq -r '.kubeconfig' > ~/.kube/config
+          if echo "$KUBECONFIG_BLOB" | jq -e '.kubeconfig' > /dev/null 2>&1; then
+            echo "$KUBECONFIG_BLOB" | jq -r '.kubeconfig' > ~/.kube/config
           else
-            echo "$KUBECONFIG" > ~/.kube/config
+            echo "$KUBECONFIG_BLOB" > ~/.kube/config
           fi
           chmod 600 ~/.kube/config
+          echo "KUBECONFIG=$HOME/.kube/config" >> "$GITHUB_ENV"
 
       - name: Validate app directory exists
         run: |
