@@ -92,7 +92,14 @@ clickhouse:
   deploy: true
   shards: 1
   replicaCount: 1
-  resourcesPreset: small
+  resourcesPreset: "none"
+  resources:
+    requests:
+      cpu: 100m
+      memory: 1Gi
+    limits:
+      cpu: "2"
+      memory: 2Gi
   auth:
     username: default
     existingSecret: langfuse-secrets
