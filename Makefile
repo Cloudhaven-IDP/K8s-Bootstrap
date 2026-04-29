@@ -1,3 +1,5 @@
+SHELL := /bin/bash
+
 CLUSTER ?= nebulosa
 APP     ?=
 
