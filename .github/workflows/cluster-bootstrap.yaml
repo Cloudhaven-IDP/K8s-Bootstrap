@@ -1,0 +1,82 @@
+name: cluster-bootstrap
+
+on:
+  workflow_dispatch:
+    inputs:
+      cluster:
+        description: Target cluster
+        required: true
+        type: choice
+        options:
+          - nebulosa
+          - humboldt
+      app:
+        description: App directory name (e.g. victoria-metrics, loki, langfuse)
+        required: true
+        type: string
+      target:
+        description: Make input
+        required: true
+        type: choice
+        default: diff
+        options:
+          - build
+          - diff
+          - apply
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  run:
+    runs-on: cloudhaven-runner
+    steps:
+      - name: Checkout K8s-Bootstrap
+        uses: actions/checkout@v4
+
+      - name: Assume AWS role via OIDC
+        uses: Cloudhaven-IDP/Actions/aws-oidc-assume@main
+
+      - name: Fetch kubeconfig from Secrets Manager
+        uses: aws-actions/aws-secretsmanager-get-secrets@v2
+        with:
+          secret-ids: KUBECONFIG,${{ inputs.cluster }}/kubeconfig
+          parse-json-secrets: false
+
+      - name: Write kubeconfig
+        run: |
+          mkdir -p ~/.kube
+          echo "$KUBECONFIG" > ~/.kube/config
+          chmod 600 ~/.kube/config
+
+      - name: Validate app directory exists
+        run: |
+          if [[ ! -d "${{ inputs.cluster }}/${{ inputs.app }}" ]]; then
+            echo "Directory ${{ inputs.cluster }}/${{ inputs.app }} not found"
+            exit 1
+          fi
+
+      - name: Run ${{ inputs.target }}
+        id: kube
+        run: |
+          # kubectl diff exits 1 when differences exist — that is not a failure
+          set +e
+          OUTPUT=$(make ${{ inputs.target }} CLUSTER=${{ inputs.cluster }} APP=${{ inputs.app }} 2>&1)
+          EXIT_CODE=$?
+          set -e
+
+          echo "$OUTPUT"
+
+          if [[ "${{ inputs.target }}" == "diff" && $EXIT_CODE -eq 1 ]]; then
+            EXIT_CODE=0
+          fi
+
+          {
+            echo "## ${{ inputs.target }} — ${{ inputs.cluster }}/${{ inputs.app }}"
+            echo '```diff'
+            echo "$OUTPUT"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          exit $EXIT_CODE
