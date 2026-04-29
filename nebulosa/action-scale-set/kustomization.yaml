@@ -32,4 +32,4 @@ helmCharts:
 
 images:
   - name: ghcr.io/cloudhaven-idp/gha-runner
-    newTag: 7c84f4f0a7730b0ab473ff15db65fa307489cba5
+    newTag: d5f3c99196975ee8da601362ef6fc47362090b39
