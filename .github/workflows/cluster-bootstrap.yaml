@@ -47,7 +47,11 @@ jobs:
       - name: Write kubeconfig
         run: |
           mkdir -p ~/.kube
-          echo "$KUBECONFIG" > ~/.kube/config
+          if echo "$KUBECONFIG" | jq -e '.kubeconfig' > /dev/null 2>&1; then
+            echo "$KUBECONFIG" | jq -r '.kubeconfig' > ~/.kube/config
+          else
+            echo "$KUBECONFIG" > ~/.kube/config
+          fi
           chmod 600 ~/.kube/config
 
       - name: Validate app directory exists
