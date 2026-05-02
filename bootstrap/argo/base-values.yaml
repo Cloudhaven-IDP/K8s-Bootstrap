@@ -1,0 +1,40 @@
+global:
+  domain: argocd.cloudhaven.work
+
+configs:
+  cm:
+    url: https://argocd.cloudhaven.work
+
+server:
+  extraArgs:
+    - --insecure
+
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    https: false
+    annotations:
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+      nginx.ingress.kubernetes.io/ssl-redirect: "false"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+    hosts:
+      - argocd.cloudhaven.work
+    tls:
+      - secretName: argocd-tls
+        hosts:
+          - argocd.cloudhaven.work
+
+  service:
+    type: ClusterIP
+
+dex:
+  enabled: true
+
+redis:
+  enabled: true
+
+controller:
+  replicas: 1
+
+repoServer:
+  replicas: 1
