@@ -277,7 +277,7 @@ alloy:
 
       prometheus.remote_write "victoriametrics" {
         endpoint {
-          url = "http://vmsingle.observability.svc.cluster.local:8428/api/v1/write"
+          url = "http://vmsingle-server.observability.svc.cluster.local:8428/api/v1/write"
         }
         external_labels = {
           cluster = "nebulosa",
