@@ -38,10 +38,11 @@ langfuse:
       value: "true"
     - name: AUTH_DISABLE_USERNAME_PASSWORD
       value: "true"
-
-  additionalEnvFrom:
-    - secretRef:
-        name: langfuse-oidc
+    - name: AUTH_AUTHENTIK_CLIENT_SECRET
+      valueFrom:
+        secretKeyRef:
+          name: langfuse-oidc
+          key: AUTH_AUTHENTIK_CLIENT_SECRET
 
   extraVolumes:
     - name: aws-iam-token
