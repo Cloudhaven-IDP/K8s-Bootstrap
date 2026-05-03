@@ -8,7 +8,7 @@ langfuse:
       name: langfuse-secrets
       key: encryption-key
   nextauth:
-    url: http://langfuse.internal.cloudhaven.work
+    url: https://langfuse.internal.cloudhaven.work
     secret:
       secretKeyRef:
         name: langfuse-secrets
@@ -30,6 +30,18 @@ langfuse:
       value: /var/run/secrets/eks.amazonaws.com/serviceaccount/token
     - name: AWS_REGION
       value: us-east-1
+    - name: AUTH_AUTHENTIK_CLIENT_ID
+      value: langfuse
+    - name: AUTH_AUTHENTIK_ISSUER
+      value: https://auth.internal.cloudhaven.work/application/o/langfuse/
+    - name: AUTH_AUTHENTIK_ALLOW_ACCOUNT_LINKING
+      value: "true"
+    - name: AUTH_DISABLE_USERNAME_PASSWORD
+      value: "true"
+
+  additionalEnvFrom:
+    - secretRef:
+        name: langfuse-oidc
 
   extraVolumes:
     - name: aws-iam-token
