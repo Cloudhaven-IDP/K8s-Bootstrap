@@ -1,0 +1,40 @@
+clusterName: temporal-pg
+
+postgres:
+  instances: 2
+
+  storage:
+    storageClass: ebs-gp3
+    size: 20Gi
+
+  bootstrap:
+    database: temporal
+    owner: temporal
+    postInitSQLRefs:
+      configMapRefs:
+        - name: temporal-pg-init
+          key: post-init.sql
+
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      memory: 2Gi
+
+appRoles:
+  - name: temporal
+    pgRole: temporal
+    namespace: temporal-system
+    database: temporal
+    schema: public
+    accessMode: admin
+    authMode: password
+
+secretBackend:
+  type: none
+
+coredns:
+  rewrite:
+    enabled: false
+    kubernetesZone: cluster.local

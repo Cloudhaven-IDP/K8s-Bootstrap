@@ -1,0 +1,69 @@
+server:
+  replicaCount: 1
+
+  dynamicConfig:
+    frontend.workerHeartbeatsEnabled:
+      - value: true
+
+  config:
+    persistence:
+      defaultStore: default
+      visibilityStore: visibility
+      numHistoryShards: 512
+
+      datastores:
+        default:
+          sql:
+            pluginName: postgres12_pgx
+            driverName: postgres12_pgx
+            databaseName: temporal
+            connectAddr: "temporal-pg-rw:5432"
+            connectProtocol: tcp
+            user: temporal
+            existingSecret: temporal-pg-app
+            secretKey: password
+            maxConns: 20
+            maxIdleConns: 20
+            maxConnLifetime: "1h"
+            createDatabase: false
+            manageSchema: true
+
+        visibility:
+          sql:
+            pluginName: postgres12_pgx
+            driverName: postgres12_pgx
+            databaseName: temporal_visibility
+            connectAddr: "temporal-pg-rw:5432"
+            connectProtocol: tcp
+            user: temporal
+            existingSecret: temporal-pg-app
+            secretKey: password
+            maxConns: 20
+            maxIdleConns: 20
+            maxConnLifetime: "1h"
+            createDatabase: false
+            manageSchema: true
+
+web:
+  enabled: true
+  replicaCount: 1
+  service:
+    type: ClusterIP
+    port: 8080
+
+  additionalEnv:
+    - name: TEMPORAL_AUTH_ENABLED
+      value: "true"
+    - name: TEMPORAL_AUTH_PROVIDER_URL
+      value: https://auth.internal.cloudhaven.work/application/o/temporal/
+    - name: TEMPORAL_AUTH_CLIENT_ID
+      value: temporal
+    - name: TEMPORAL_AUTH_CALLBACK_URL
+      value: https://temporal.internal.cloudhaven.work/auth/sso/callback
+    - name: TEMPORAL_AUTH_SCOPES
+      value: openid,profile,email
+
+  additionalEnvSecretName: temporal-oidc
+
+schema:
+  useHelmHooks: false
