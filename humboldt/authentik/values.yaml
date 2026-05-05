@@ -1,0 +1,72 @@
+authentik:
+  log_level: info
+
+  postgresql:
+    host: authentik-pg-rw
+    name: authentik
+    user: authentik
+
+server:
+  replicas: 1
+
+  ingress:
+    enabled: false
+
+  route:
+    main:
+      enabled: true
+      hostnames:
+        - auth.internal.cloudhaven.work
+      parentRefs:
+        - name: humboldt-internal
+          namespace: envoy-gateway-system
+          sectionName: https
+
+  envFrom:
+    - secretRef:
+        name: authentik-bootstrap
+
+  env:
+    - name: AUTHENTIK_BOOTSTRAP_EMAIL
+      value: cloudhaveninfra@gmail.com
+    - name: AUTHENTIK_POSTGRESQL__PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: authentik-pg-app
+          key: password
+
+worker:
+  replicas: 1
+
+  envFrom:
+    - secretRef:
+        name: authentik-bootstrap
+
+  env:
+    - name: AUTHENTIK_BOOTSTRAP_EMAIL
+      value: cloudhaveninfra@gmail.com
+    - name: AUTHENTIK_POSTGRESQL__PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: authentik-pg-app
+          key: password
+
+postgresql:
+  enabled: false
+
+redis:
+  enabled: true
+  architecture: standalone
+  auth:
+    enabled: false
+  master:
+    persistence:
+      enabled: true
+      size: 2Gi
+      storageClass: ebs-gp3
+
+serviceAccount:
+  create: true
+  name: authentik
+  annotations:
+    eks.amazonaws.com/role-arn: "arn:aws:iam::445746982355:role/humboldt-authentik"

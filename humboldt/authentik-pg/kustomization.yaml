@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: authentik
+
+resources:
+  - namespace.yaml
+
+helmCharts:
+  - name: postgres-platform
+    repo: https://cloudhaven-idp.github.io/GitOps
+    version: 0.1.2
+    releaseName: authentik-pg
+    namespace: authentik
+    valuesFile: values.yaml

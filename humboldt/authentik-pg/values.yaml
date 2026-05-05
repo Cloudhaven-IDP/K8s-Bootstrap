@@ -1,0 +1,36 @@
+clusterName: authentik-pg
+
+postgres:
+  instances: 2
+
+  storage:
+    storageClass: ebs-gp3
+    size: 10Gi
+
+  bootstrap:
+    database: authentik
+    owner: authentik
+
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      memory: 1Gi
+
+appRoles:
+  - name: authentik
+    pgRole: authentik
+    namespace: authentik
+    database: authentik
+    schema: public
+    accessMode: admin
+    authMode: password
+
+secretBackend:
+  type: none
+
+coredns:
+  rewrite:
+    enabled: false
+    kubernetesZone: cluster.local
