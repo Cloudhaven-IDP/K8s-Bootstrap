@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: kube-system
+
+helmCharts:
+  - name: aws-cloud-controller-manager
+    repo: https://kubernetes.github.io/cloud-provider-aws
+    version: 0.0.11
+    releaseName: aws-cloud-controller-manager
+    namespace: kube-system
+    valuesFile: values.yaml
+
+patches:
+  - path: serviceaccount-irsa.yaml
+    target:
+      kind: ServiceAccount
+      name: cloud-controller-manager
+  - path: daemonset-hostnetwork.yaml
+    target:
+      kind: DaemonSet
+      name: aws-cloud-controller-manager

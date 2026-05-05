@@ -1,0 +1,36 @@
+args:
+  - --v=2
+  - --cloud-provider=aws
+  - --configure-cloud-routes=false
+  - --controllers=cloud-node,cloud-node-lifecycle
+
+env:
+  - name: AWS_REGION
+    value: us-east-1
+  - name: AWS_ROLE_ARN
+    value: arn:aws:iam::445746982355:role/humboldt-ccm
+  - name: AWS_WEB_IDENTITY_TOKEN_FILE
+    value: /var/run/secrets/eks.amazonaws.com/serviceaccount/token
+  - name: AWS_STS_REGIONAL_ENDPOINTS
+    value: regional
+
+extraVolumes:
+  - name: aws-iam-token
+    projected:
+      sources:
+        - serviceAccountToken:
+            audience: sts.amazonaws.com
+            expirationSeconds: 3600
+            path: token
+
+extraVolumeMounts:
+  - name: aws-iam-token
+    mountPath: /var/run/secrets/eks.amazonaws.com/serviceaccount
+    readOnly: true
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 100Mi
+  limits:
+    memory: 300Mi
